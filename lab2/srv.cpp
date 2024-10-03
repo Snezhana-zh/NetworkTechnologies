@@ -42,7 +42,6 @@ class Server {
         }
 
         ~Server() {
-            // закрыть клиентов
             acceptor_.close();
         }
     private:
