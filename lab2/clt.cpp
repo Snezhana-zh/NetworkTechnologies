@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
             boost::asio::write(socket, boost::asio::buffer(buffer, count));
         }
 
-        char status[4];
+        char status[6] = "";
         boost::system::error_code error;
         socket.read_some(boost::asio::buffer(status), error);
         if (error) {

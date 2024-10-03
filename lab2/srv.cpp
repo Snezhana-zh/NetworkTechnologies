@@ -47,10 +47,18 @@ class Server {
         unsigned short port;
 };
 
+std::list<tcp::socket> sockets; // сделать у сервера как private поле, 
+// сервер сделать синглтон и вызывать метод получения сокета из функции handler
+
 boost::system::error_code error;
 
-void handle_client(tcp::socket& socket) {
+void handle_client() {
     try {
+        if (sockets.empty()) {
+            return;            
+        }
+        tcp::socket& socket = sockets.back(); // сделать внутри сервера мьютекс
+        
         // char file_name[256];
         boost::asio::streambuf streambuffer;
         size_t len_read = boost::asio::read_until(socket, streambuffer, '?');
@@ -111,7 +119,11 @@ void handle_client(tcp::socket& socket) {
             recieved_size += count_bytes;
         } //если ошибка, написать клиенкту error
 
-        std::string status = "OK";
+        std::string status;
+        std::cout << "recieved_size = " << recieved_size << std::endl;
+
+        if (recieved_size != size) status = "ERROR";
+        else status = "OK";
 
         boost::asio::write(socket, boost::asio::buffer(status, status.length()));
         std::cout << "File received." << std::endl;
@@ -134,24 +146,17 @@ int main(int argc, char* argv[]) {
         srv_sock->bindSocket();
         srv_sock->listenSocket();
 
-        std::list<tcp::socket> sockets;
-
         while(1) {
             tcp::socket clt_sock(io_context);
             srv_sock->acceptSocket(clt_sock);
             std::cout << "Added new client..." << std::endl;
-            // sockets.push_back(std::move(clt_sock));
-            std::thread thread(handle_client, std::ref(clt_sock));
-            thread.join();
-            // создание потока и continue + close(clt_sock);
-            // handle_client(clt_sock); // поточная функция
+            sockets.push_back(std::move(clt_sock));
+            std::thread thread(handle_client);
+            thread.detach();
         }
     }
-    catch (std::exception& e)
-    {
+    catch (std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
-
-    return 0;
 }
