@@ -10,15 +10,23 @@
 #include <filesystem>
 #include <fstream>
 #include <thread>
+#include <mutex>
 
 using boost::asio::ip::address;
 using boost::asio::ip::tcp;
+
+struct StatisticsData {
+    size_t bytes_sent = 0;
+    std::chrono::steady_clock::time_point start_time;
+};
 
 class Server {
     public:
         Server(boost::asio::io_context& io_context, unsigned short p = 0, std::string f_name = "uploads");
 
         void run(boost::asio::io_context& io_context);
+
+        std::chrono::steady_clock::time_point& getTime();
 
         void openSocket();
 
@@ -32,16 +40,25 @@ class Server {
 
         void acceptSocket(tcp::socket& sock);
 
+        size_t& getTotalBytes();
+
+        std::unordered_map<int, StatisticsData>& getClientsMap();
+
         ~Server();
     private:
+        size_t total_bytes_sent;
+        std::unordered_map<int, StatisticsData> clients;
         std::string folderName;
         tcp::acceptor acceptor_;
         tcp::endpoint endpoint;
         unsigned short port;
+        std::chrono::steady_clock::time_point start_time_server;
 };
 
 extern Server* srv_sock;
 
-void handle_client(tcp::socket socket);
+extern std::mutex mtx;
+
+void handle_client(tcp::socket socket, int client_id);
 
 #endif

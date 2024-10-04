@@ -25,9 +25,12 @@ void run_client(std::string file_name, std::string file_size, std::string ip, st
 
         char buffer[1024];
 
+        char ready[6] = "";
+        boost::system::error_code error1;
+        socket.read_some(boost::asio::buffer(ready), error1);
+
         while (!file.eof()) {
             size_t count = file.read(buffer, sizeof(buffer)).gcount();
-            // std::cout << "count: " << count << std::endl;
             boost::asio::write(socket, boost::asio::buffer(buffer, count));
         }
 
