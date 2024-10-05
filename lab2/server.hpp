@@ -12,11 +12,14 @@
 #include <thread>
 #include <mutex>
 
+#define BUFFER_SIZE_SERVER 1024
+
 using boost::asio::ip::address;
 using boost::asio::ip::tcp;
 
 struct StatisticsData {
     size_t bytes_sent = 0;
+    double speed;
     std::chrono::steady_clock::time_point start_time;
 };
 
@@ -40,13 +43,10 @@ class Server {
 
         void acceptSocket(tcp::socket& sock);
 
-        size_t& getTotalBytes();
-
         std::unordered_map<int, StatisticsData>& getClientsMap();
 
         ~Server();
     private:
-        size_t total_bytes_sent;
         std::unordered_map<int, StatisticsData> clients;
         std::string folderName;
         tcp::acceptor acceptor_;

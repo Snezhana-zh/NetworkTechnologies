@@ -13,19 +13,17 @@ void run_client(std::string file_name, std::string file_size, std::string ip, st
         std::string name = file_name + "?";
         size_t len_write = boost::asio::write(socket, boost::asio::buffer(name, name.length()));
         std::cout << "Sended message: " << name << std::endl;
-        // std::cout << "len_write: " << len_write << std::endl;
 
         std::string size = file_size + "?";
         size_t len_size = boost::asio::write(socket, boost::asio::buffer(size, size.length()));
         std::cout << "Sended message: " << file_size << std::endl;
-        // std::cout << "len_size: " << len_size << std::endl;
 
         std::ifstream file(file_name, std::ios::binary);
         file.seekg(0, std::ios::beg);
 
-        char buffer[1024];
+        char buffer[BUFFER_SIZE];
 
-        char ready[6] = "";
+        char ready[STATUS_SIZE] = "";
         boost::system::error_code error1;
         socket.read_some(boost::asio::buffer(ready), error1);
 
@@ -36,7 +34,7 @@ void run_client(std::string file_name, std::string file_size, std::string ip, st
 
         std::cout << "End of sending data." << std::endl;
 
-        char status[6] = "";
+        char status[STATUS_SIZE] = "";
         socket.read_some(boost::asio::buffer(status));
         std::cout << "STATUS: " << status << std::endl;
 
