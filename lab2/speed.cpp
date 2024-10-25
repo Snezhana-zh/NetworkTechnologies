@@ -14,9 +14,9 @@ void calculate_speed() {
             
             double avg_speed = working_time > 0 ? (static_cast<double>(data.bytes_sent) / 1024) / working_time : 0;
 
-            std::cout << "Client " << client_id << " Average Sent Speed: " << avg_speed << " Kbytes/sec" << std::endl;
+            std::cout << "Client " << client_id << " Average Sent Speed: " << avg_speed / 1024 << " Mb/sec" << std::endl;
 
-            std::cout << "Client " << client_id << " Sent Speed: " << data.speed << " Kbytes/sec" << std::endl;
+            std::cout << "Client " << client_id << " Sent Speed: " << data.speed / 1024 << " Mb/sec" << std::endl;
         }
         std::cout << "=========================\n" << std::endl;
     }

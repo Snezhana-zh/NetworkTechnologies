@@ -7,7 +7,7 @@ Server* srv_sock;
 std::mutex mtx;
 
 int main(int argc, char* argv[]) {
-    if (argc != 2 && argc != 5) {
+    if (argc != 2 && argc != 4) {
         std::cerr << "Invalid args!" << std::endl;
         return 1;
     }
@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
             srv_sock->run(io_context);
         }
         else {
-            run_client(argv[1], argv[2], argv[3], argv[4]);
+            run_client(argv[1], argv[2], argv[3]);
         }
     }
     catch (std::exception& e) {
@@ -27,5 +27,3 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 }
-
-// to do: узнать оптимальный размер буфера для передачи - сравнить скорости, узнать mtu, проверить с другим ноутом

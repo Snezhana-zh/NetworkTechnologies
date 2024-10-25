@@ -63,6 +63,8 @@ void handle_client(tcp::socket socket, int client_id) {
         std::string ready = "READY";
         boost::asio::write(socket, boost::asio::buffer(ready, ready.length()));
 
+        std::chrono::high_resolution_clock::time_point global_start = std::chrono::high_resolution_clock::now();
+
         while (recieved_size < size) {
             std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
             
@@ -74,22 +76,26 @@ void handle_client(tcp::socket socket, int client_id) {
             file.write(buffer, count_bytes);
             recieved_size += count_bytes;
 
-            const std::chrono::duration<double, std::milli> elapsed = std::chrono::high_resolution_clock::now() - start;
+            const std::chrono::duration<double, std::milli> end = std::chrono::high_resolution_clock::now() - start;
 
-            speed = count_bytes / elapsed.count();
+            speed = ((double)count_bytes / (end.count() / 1000)) / 1024.0;
         }
 
         std::string status = (recieved_size != size) ? "ERROR" : "OK";
 
         boost::asio::write(socket, boost::asio::buffer(status, status.length()));
         std::cout << "File received." << std::endl;
+
+        const std::chrono::duration<double, std::milli> global_end = std::chrono::high_resolution_clock::now() - global_start;
+        if (global_end.count() < 3000) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+        }
+
+        std::lock_guard<std::mutex> lock(mtx);
+        srv_sock->getClientsMap().erase(client_id);
     }
     catch (std::exception& e) {
         std::cerr << "error with client_id " << client_id << ": " << e.what() << std::endl;
-    }
-    {
-        std::lock_guard<std::mutex> lock(mtx);
-        srv_sock->getClientsMap().erase(client_id);
     }
 }
 

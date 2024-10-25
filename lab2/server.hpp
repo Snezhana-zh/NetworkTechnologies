@@ -12,7 +12,7 @@
 #include <thread>
 #include <mutex>
 
-#define BUFFER_SIZE_SERVER 1024
+#define BUFFER_SIZE_SERVER 1500
 
 using boost::asio::ip::address;
 using boost::asio::ip::tcp;

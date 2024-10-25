@@ -1,6 +1,6 @@
 #include "client.hpp"
 
-void run_client(std::string file_name, std::string file_size, std::string ip, std::string port) {
+void run_client(std::string file_name, std::string ip, std::string port) {
     try {
         boost::asio::io_context io_context;
         tcp::socket socket(io_context);
@@ -12,11 +12,21 @@ void run_client(std::string file_name, std::string file_size, std::string ip, st
 
         std::string name = file_name + "?";
         size_t len_write = boost::asio::write(socket, boost::asio::buffer(name, name.length()));
-        std::cout << "Sended message: " << name << std::endl;
+        std::cout << "Sended file name: " << file_name << std::endl;
 
-        std::string size = file_size + "?";
+        size_t fileSize;
+        std::filesystem::path filePath = std::filesystem::current_path() / file_name;
+        if (std::filesystem::exists(filePath) && std::filesystem::is_regular_file(filePath)) {
+            fileSize = std::filesystem::file_size(filePath);
+        } else {
+            std::cerr << "ERROR: The file was not found or is not a regular file." << std::endl;
+            return;
+        }
+
+        std::string size = std::to_string(fileSize) + "?";
+
         size_t len_size = boost::asio::write(socket, boost::asio::buffer(size, size.length()));
-        std::cout << "Sended message: " << file_size << std::endl;
+        std::cout << "Sended fize size: " << fileSize << std::endl;
 
         std::ifstream file(file_name, std::ios::binary);
         file.seekg(0, std::ios::beg);
