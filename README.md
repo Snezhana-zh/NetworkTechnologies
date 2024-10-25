@@ -19,5 +19,5 @@
 
 Строка компиляции: g++ srv.cpp clt.cpp speed.cpp main.cpp -o main -I D:\boost_build\include\boost-1_86 -L D:\boost_build\lib -lws2_32  
 Пример запуска программы:  
-./main file.txt 1443038 127.0.0.1 2222  
+./main file.txt 127.0.0.1 2222  
 ./main 2222  
