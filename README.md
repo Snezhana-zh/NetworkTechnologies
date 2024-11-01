@@ -30,5 +30,7 @@
 Для тестирования можно настроить любой Web-браузер на использование вашего прокси, и посещать любые веб-сайты, богатые контентом.
 
 ### Запуск 
-Строка компиляции: g++ main.cpp proxy.cpp session.cpp -o socks-proxy -I D:\boost_build\include\boost-1_86 -L D:\boost_build\lib -lws2_32 -lwsock32 
+Строка компиляции: 
+g++ main.cpp proxy.cpp session.cpp -o socks-proxy -I D:\boost_build\include\boost-1_86 -L D:\boost_build\lib -lws2_32 -lwsock32 
+
 Запуск: ./socks_proxy 2222
