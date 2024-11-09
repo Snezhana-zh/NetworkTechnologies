@@ -31,6 +31,6 @@
 
 ### Запуск 
 Строка компиляции: 
-g++ main.cpp proxy.cpp session.cpp -o socks-proxy -I D:\boost_build\include\boost-1_86 -L D:\boost_build\lib -lws2_32 -lwsock32 
+g++ main.cpp proxy.cpp session.cpp -o socks_proxy -I D:\boost_build\include\boost-1_86 -L D:\boost_build\lib -lws2_32 -lwsock32 
 
 Запуск: ./socks_proxy 2222
