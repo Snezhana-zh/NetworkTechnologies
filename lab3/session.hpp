@@ -6,9 +6,9 @@
 #include <boost/bind/bind.hpp>
 
 using boost::asio::ip::tcp;
-#define MAX_LEN 8192
+#define MAX_LEN 8*1024
 
-enum Bits {
+enum Bytes {
     VERTION = 0x05,
     METHOD_NUM = 0x00,
     COMAND_CODE = 0X01,
