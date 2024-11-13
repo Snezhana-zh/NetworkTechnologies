@@ -18,11 +18,11 @@ void Session::read_client_greeting() {
 }
 
 void Session::handle_client_greeting(const boost::system::error_code& error, size_t bytes_transferred) {
-    if (bytes_transferred < 2 || data_.at(0) != Bytes::VERTION) {
+    if (bytes_transferred < MIN_LENGTH_GREETING || data_.at(VERTION_IN_ARRAY) != Bytes::VERTION) {
         return;
     }
 
-    uint8_t methods_count = data_.at(1);
+    uint8_t methods_count = data_.at(METHOD_COUNT);
     bool no_auth_method_found = false;
     for (uint8_t i = 0; i < methods_count; ++i) {
         if (data_.at(2 + i) == Bytes::METHOD_NUM) {
@@ -65,25 +65,25 @@ void Session::handle_client_request(const boost::system::error_code& error, size
         std::cerr << "Error message: " << error.message() << std::endl;
         return;
     }
-    if (bytes_transferred < 5 || data_.at(0) != Bytes::VERTION || data_.at(1) != Bytes::COMAND_CODE) {
+    if (bytes_transferred < MIN_LENGTH_REQUEST || data_.at(VERTION_IN_ARRAY) != Bytes::VERTION || data_.at(METHOD_COUNT) != Bytes::COMAND_CODE) {
         return;
     }
 
     std::string host;
     uint16_t port;
 
-    if (data_.at(3) == Bytes::ADDRESS_TYPE_Domen) {
-        uint8_t len = data_.at(4);
+    if (data_.at(ADDRESS_TYPE) == Bytes::ADDRESS_TYPE_Domen) {
+        uint8_t len = data_.at(LEN_NAME);
         host = "";
         for (int i = 0; i < len; i++) {
             host += data_.at(5 + i);
         }
-        port = (data_.at(5 + len) << 8) | data_.at(6 + len);
+        port = boost::endian::big_to_native(*reinterpret_cast<const uint16_t*>(&data_[5]));
     } 
-    else if (data_.at(3) == Bytes::ADDRESS_TYPE_Ipv4) {
+    else if (data_.at(ADDRESS_TYPE) == Bytes::ADDRESS_TYPE_Ipv4) {
         host = std::to_string(data_.at(4)) + "." + std::to_string(data_.at(5)) + "." +
                 std::to_string(data_.at(6)) + "." + std::to_string(data_.at(7));
-        port = ntohs(*reinterpret_cast<const uint16_t*>(&data_[8]));
+        port = boost::endian::big_to_native(*reinterpret_cast<const uint16_t*>(&data_[8]));
     } 
     else {
         return;
@@ -113,8 +113,8 @@ void Session::handle_resolve(const boost::system::error_code& error, tcp::resolv
 void Session::handle_connect(const boost::system::error_code& error, const tcp::endpoint& endpoint) {
     if (!error) {
         uint8_t response[] = {Bytes::VERTION, Bytes::REQUEST_GRATED, 0x00, Bytes::ADDRESS_TYPE_Ipv4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-        *reinterpret_cast<uint32_t*>(&response[4]) = htonl(server_socket_.remote_endpoint().address().to_v4().to_ulong());
-        *reinterpret_cast<uint16_t*>(&response[8]) = htons(server_socket_.remote_endpoint().port());
+        *reinterpret_cast<uint32_t*>(&response[4]) = boost::endian::native_to_big(server_socket_.remote_endpoint().address().to_v4().to_ulong());
+        *reinterpret_cast<uint16_t*>(&response[8]) = boost::endian::native_to_big(server_socket_.remote_endpoint().port());
 
         boost::asio::async_write(client_socket_, boost::asio::buffer(response, sizeof(response)),
                                     boost::bind(&Session::start_relay, shared_from_this(),

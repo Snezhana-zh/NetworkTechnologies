@@ -4,9 +4,16 @@
 #include <iostream>
 #include <boost/asio.hpp>
 #include <boost/bind/bind.hpp>
+#include <boost/endian/conversion.hpp>
 
 using boost::asio::ip::tcp;
 #define MAX_LEN 8*1024
+#define MIN_LENGTH_GREETING 2
+#define MIN_LENGTH_REQUEST 7
+#define VERTION_IN_ARRAY 0
+#define METHOD_COUNT 1
+#define LEN_NAME 4
+#define ADDRESS_TYPE 3
 
 enum Bytes {
     VERTION = 0x05,
