@@ -21,3 +21,9 @@
 1) [Получение локаций с координатами и названиями](https://docs.graphhopper.com/#operation/getGeocode)  
 2) [Получение погоды по координатам](https://openweathermap.org/current)  
 3) [Получение списка интересных мест по координатам и получение описания места по его id](https://dev.opentripmap.org/docs)  
+### Библиотеки, используемые мною в проекте:  
+nlohmann (header-only library) - [https://github.com/nlohmann/json](https://github.com/nlohmann/json)  
+httplib (header-only library) - [https://github.com/yhirose/cpp-httplib](https://github.com/yhirose/cpp-httplib)  
+libcurl - [https://github.com/curl/curl](https://github.com/curl/curl)  
+### Запуск  
+Запустить проект можно в visual studio.
