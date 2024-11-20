@@ -2,7 +2,6 @@
 #include <string>
 #include "controller.h"
 
-
 int main() {
     try {
         Application* application = new Application();

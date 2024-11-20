@@ -1,10 +1,6 @@
 #include "application.h"
 #include "utils.h"
 
-// acync mode!!!
-// ru language
-// how html + start() works ?
-
 void Application::find_location(const std::string& location_name_arg, std::vector<json>& location_list) {
     std::string location_name = location_name_arg;
     std::replace(location_name.begin(), location_name.end(), ' ', '+');
@@ -59,7 +55,8 @@ void Application::find_description(const json& locationsJson, std::vector<Place>
                     return;
                 }
             }
-
+            
+            if (place.name.empty()) continue;
             place.index = ++global_index;
             places.push_back(place);
 
@@ -70,21 +67,13 @@ void Application::find_description(const json& locationsJson, std::vector<Place>
 
 void Application::find_places(const json& location, std::vector<Place>& places) {
     std::string url;
-    if (location.contains("extent") && location["extent"].is_array() && location["extent"].size() == 4) {
-        double lon_min = location["extent"][0];
-        double lat_min = location["extent"][1];
-        double lon_max = location["extent"][2];
-        double lat_max = location["extent"][3];
-        url = "http://api.opentripmap.com/0.1/" + locale +  "/places/bbox?lon_min=" + std::to_string(lon_min) +
-            "&lat_min=" + std::to_string(lat_min) +
-            "&lon_max=" + std::to_string(lon_max) +
-            "&lat_max=" + std::to_string(lat_max) +
-            "&kinds=churches&format=geojson&apikey=" + places_api_key;
-    }
-    else {
-        std::cerr << "Invalid extent data in location JSON." << std::endl;
-        return;
-    }
+
+    double lat = location["point"]["lat"];
+    double lng = location["point"]["lng"];
+
+    url = "http://api.opentripmap.com/0.1/" + locale + "/places/radius?radius=1000&lon=" + std::to_string(lng) +
+        "&lat=" + std::to_string(lat) +
+        "&apikey=" + places_api_key;
 
     std::string response = performRequest(url);
     auto locationsJson = json::parse(response);
