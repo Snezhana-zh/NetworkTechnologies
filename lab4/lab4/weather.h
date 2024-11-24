@@ -22,4 +22,4 @@ struct WeatherData {
 };
 
 // Функция для заполнения структуры данными о погоде
-WeatherData parseWeatherData(const json& weatherJson);
+void parseToWeatherData(const json& weatherJson, std::shared_ptr<WeatherData> weatherData);

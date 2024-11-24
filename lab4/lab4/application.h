@@ -4,13 +4,23 @@
 #include "place.h"
 #include "config.h"
 
+#include "info_places_model.h"
+#include "location_model.h"
+#include "weather_model.h"
+
 class Application {
 public:
-    void find_location(const std::string& location_name, std::vector<json>& locations_list);
+	Application();
 
-    WeatherData find_weather(const json& location_name);
+	WeatherModel* getWeatherModel();
 
-    void find_places(const json& location, std::vector<Place>& places);
+	InfoPlacesModel* getInfoModel();
 
-    void find_description(const json& locationsJson, std::vector<Place>& places);
+	LocationsModel* getLocationsModel();
+
+	~Application();
+private:
+	WeatherModel* weather;
+	InfoPlacesModel* info;
+	LocationsModel* locations;
 };

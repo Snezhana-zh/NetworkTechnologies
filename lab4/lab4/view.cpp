@@ -1,7 +1,7 @@
 #include "view.h"
 #include "utils.h"
 
-std::string View::createResultInfoHtml(const WeatherData& weatherData, std::vector<Place> places, Place loc) {
+std::string View::createResultInfoHtml(const std::shared_ptr<WeatherData> weatherData, std::shared_ptr<std::vector<Place>> places, Place loc) {
     std::string html = R"(
         <!DOCTYPE html>
         <html>
@@ -19,19 +19,19 @@ std::string View::createResultInfoHtml(const WeatherData& weatherData, std::vect
     html += loc.name + ", " + loc.osm + ", " + loc.country + R"(
             <br><button onclick=goBack()>go back</button>
             <h1>Weather Information</h1>
-            <p>Temperature: )" + formatDouble(weatherData.temperature - ABSOLUTE_ZERO) + " C" + R"(</p>
-            <p>Feels like: )" + formatDouble(weatherData.feels_like - ABSOLUTE_ZERO) + " C" + R"(</p>
-            <p>Min Temperature: )" + formatDouble(weatherData.temp_min - ABSOLUTE_ZERO) + " C" + R"(</p>
-            <p>Max Temperature: )" + formatDouble(weatherData.temp_max - ABSOLUTE_ZERO) + " C" + R"(</p>
-            <p>Pressure: )" + formatDouble(weatherData.pressure * hPa_const) + " mmHg" + R"(</p>
-            <p>Humidity: )" + formatDouble(weatherData.humidity) + "%" + R"(</p>
-            <p>Wind Speed: )" + formatDouble(weatherData.wind_speed) + " m/s" + R"(</p>
-            <p>Cloudiness: )" + formatDouble(weatherData.cloudiness) + "%" + R"(</p>
-            <p>Visibility: )" + formatDouble(weatherData.visibility) + " meters" + R"(</p>
+            <p>Temperature: )" + formatDouble(weatherData->temperature - ABSOLUTE_ZERO) + " C" + R"(</p>
+            <p>Feels like: )" + formatDouble(weatherData->feels_like - ABSOLUTE_ZERO) + " C" + R"(</p>
+            <p>Min Temperature: )" + formatDouble(weatherData->temp_min - ABSOLUTE_ZERO) + " C" + R"(</p>
+            <p>Max Temperature: )" + formatDouble(weatherData->temp_max - ABSOLUTE_ZERO) + " C" + R"(</p>
+            <p>Pressure: )" + formatDouble(weatherData->pressure * hPa_const) + " mmHg" + R"(</p>
+            <p>Humidity: )" + formatDouble(weatherData->humidity) + "%" + R"(</p>
+            <p>Wind Speed: )" + formatDouble(weatherData->wind_speed) + " m/s" + R"(</p>
+            <p>Cloudiness: )" + formatDouble(weatherData->cloudiness) + "%" + R"(</p>
+            <p>Visibility: )" + formatDouble(weatherData->visibility) + " meters" + R"(</p>
             
             <h1>Interesting places</h1>)";
 
-    for (const auto& place : places) {
+    for (const auto& place : *places) {
         html += "<h2>" + std::to_string(place.index) + ") " + place.name + ", rating: " + place.rating + R"(</h2>
         <div>)" + place.description + R"(</div>
             <img src =")" + place.image_url + R"(" alt=")" + place.name + R"(" height="400">)";
@@ -63,7 +63,7 @@ std::string View::createIndexHtml() {
     )";
 }
 
-std::string View::createLocationsHtml(const std::string& location, const std::vector<json>& locations_list) {
+std::string View::createLocationsHtml(const std::string& location, const std::shared_ptr<std::vector<json>> locations_list) {
     std::string html = R"(
         <html>
         <head>
@@ -79,8 +79,8 @@ std::string View::createLocationsHtml(const std::string& location, const std::ve
             <h1>Locations Found</h1>
             <ul>
     )";
-    for (size_t i = 0; i < locations_list.size(); ++i) {
-        const auto& loc = locations_list[i];
+    for (size_t i = 0; i < locations_list->size(); ++i) {
+        const auto& loc = locations_list->at(i);
         html += "<li><a href=\"/info?location=" + location + "&id=" + std::to_string(i) + "\">" + 
             loc["name"].get<std::string>() + ", " + loc["osm_value"].get<std::string>() + ", " + loc["country"].get<std::string>() + "</a></li>";
     }

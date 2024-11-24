@@ -1,87 +1,25 @@
 #include "application.h"
-#include "utils.h"
 
-void Application::find_location(const std::string& location_name_arg, std::vector<json>& location_list) {
-    std::string location_name = location_name_arg;
-    std::replace(location_name.begin(), location_name.end(), ' ', '+');
-
-    std::string locationsUrl = "https://graphhopper.com/api/1/geocode?q=" + url_encode(location_name) + "&locale=" + locale + "&key=" + location_api_key + "&limit=" + std::to_string(limit);
-    std::string locationsResponse = performRequest(locationsUrl);
-
-    auto locationsJson = json::parse(locationsResponse);
-    location_list = locationsJson["hits"];
+Application::Application() {
+	weather = new WeatherModel();
+	info = new InfoPlacesModel();
+	locations = new LocationsModel();
 }
 
-WeatherData Application::find_weather(const json& location) {
-    double lat = location["point"]["lat"];
-    double lng = location["point"]["lng"];
-    std::string weatherUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + std::to_string(lat) + "&lon=" + std::to_string(lng) + "&appid=" + weather_api_key;
-    std::string weatherResponse = performRequest(weatherUrl);
-
-    auto weatherJson = json::parse(weatherResponse);
-    return parseWeatherData(weatherJson);
+Application::~Application() {
+	delete weather;
+	delete info;
+	delete locations;
 }
 
-void Application::find_description(const json& locationsJson, std::vector<Place>& places) {
-    std::string xid;
-    size_t global_index = 0;
-
-    if (locationsJson.contains("features") && locationsJson["features"].is_array()) {
-        for (const auto& feature : locationsJson["features"]) {
-            Place place;
-            if (feature.contains("properties") && feature["properties"].is_object()) {
-                const auto& properties = feature["properties"];
-                if (properties.contains("name") && properties["name"].is_string()) {
-                    place.name = properties["name"];
-                }
-                if (properties.contains("xid")) {
-                    xid = properties["xid"];
-                    std::string url = "http://api.opentripmap.com/0.1/" + locale + "/places/xid/" +
-                        xid + "?apikey=" + places_api_key;
-
-                    std::string response = performRequest(url);
-
-                    auto place_json = json::parse(response);
-
-                    if (place_json.contains("wikipedia_extracts")) {
-                        const auto& properties = place_json["wikipedia_extracts"];
-                        if (properties.contains("html")) {
-                            place.description = properties["html"];
-                        }
-                    }
-                    if (place_json.contains("kinds")) {
-                        std::string kinds = properties["kinds"];
-                        place.osm = kinds;
-                    }
-                    if (place_json.contains("rate") && place_json["rate"].is_string()) {
-                        place.rating = mapRating(place_json["rate"]);
-                    }
-
-                    if (place_json.contains("image") && place_json["image"].is_string()) {
-                        place.image_url = place_json["image"];
-                    }
-                }
-            }
-            
-            if (place.name.empty()) continue;
-            place.index = ++global_index;
-            places.push_back(place);
-        }
-    }
+WeatherModel* Application::getWeatherModel() {
+	return weather;
 }
 
-void Application::find_places(const json& location, std::vector<Place>& places) {
-    std::string url;
+InfoPlacesModel* Application::getInfoModel() {
+	return info;
+}
 
-    double lat = location["point"]["lat"];
-    double lng = location["point"]["lng"];
-
-    url = "http://api.opentripmap.com/0.1/" + locale + "/places/radius?radius=1000&lon=" + std::to_string(lng) +
-        "&lat=" + std::to_string(lat) +
-        "&apikey=" + places_api_key + "&limit=" + std::to_string(limit);
-
-    std::string response = performRequest(url);
-    auto locationsJson = json::parse(response);
-
-    find_description(locationsJson, places);
+LocationsModel* Application::getLocationsModel() {
+	return locations;
 }

@@ -14,9 +14,7 @@ void Controller::start() {
     svr.Get("/locations", [this](const httplib::Request& req, httplib::Response& res) {
         if (req.has_param("location")) {
             std::string location = req.get_param_value("location");
-            std::vector<json> locations_list;
-            application->find_location(location, locations_list);
-
+            auto locations_list = application->getLocationsModel()->getLocations(location);
             std::string locationsHtml = view->createLocationsHtml(url_encode(location), locations_list);
             res.set_content(locationsHtml, "text/html");
         }
@@ -28,14 +26,12 @@ void Controller::start() {
     svr.Get("/info", [this](const httplib::Request& req, httplib::Response& res) {
         if (req.has_param("location") && req.has_param("id")) {
             std::string location = req.get_param_value("location");
-            std::vector<json> locations_list;
-            application->find_location(location, locations_list);
+            auto locations_list = application->getLocationsModel()->getLocations(location);
 
             int id = std::stoi(req.get_param_value("id"));
-            if (id >= 0 && id < locations_list.size()) {
-                std::vector<Place> places;
+            if (id >= 0 && id < locations_list->size()) {
 
-                auto loc_arg = locations_list[id];
+                auto loc_arg = locations_list->at(id);
                 Place loc;
                 if (loc_arg.contains("name")) {
                     loc.name = loc_arg["name"];
@@ -47,11 +43,11 @@ void Controller::start() {
                     loc.country = loc_arg["country"];
                 }
 
-                auto weather_future = std::async(std::launch::async, [this, loc_arg]() { return application->find_weather(loc_arg); });
-                auto places_future = std::async(std::launch::async, [this, loc_arg, &places]() { return application->find_places(loc_arg, places); });
+                auto weather_future = std::async(std::launch::async, [this, loc_arg](){ return application->getWeatherModel()->getWeather(loc_arg); });
+                auto places_future = std::async(std::launch::async, [this, loc_arg]() { return application->getInfoModel()->getInfoPlaces(loc_arg); });
                 
-                places_future.wait();
-                WeatherData weatherData = weather_future.get();
+                auto places = places_future.get();
+                auto weatherData = weather_future.get();
 
                 try {
                     std::string infoHtml = view->createResultInfoHtml(weatherData, places, loc);
