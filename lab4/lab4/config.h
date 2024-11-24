@@ -15,3 +15,5 @@ const std::string places_api_key = "5ae2e3f221c38a28845f05b6525262d2e9501766df7d
 using json = nlohmann::json;
 
 const std::string locale = "ru";
+
+const int limit = 10;

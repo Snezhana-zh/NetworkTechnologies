@@ -5,7 +5,7 @@ void Application::find_location(const std::string& location_name_arg, std::vecto
     std::string location_name = location_name_arg;
     std::replace(location_name.begin(), location_name.end(), ' ', '+');
 
-    std::string locationsUrl = "https://graphhopper.com/api/1/geocode?q=" + url_encode(location_name) + "&locale=" + locale + "&key=" + location_api_key;
+    std::string locationsUrl = "https://graphhopper.com/api/1/geocode?q=" + url_encode(location_name) + "&locale=" + locale + "&key=" + location_api_key + "&limit=" + std::to_string(limit);
     std::string locationsResponse = performRequest(locationsUrl);
 
     auto locationsJson = json::parse(locationsResponse);
@@ -49,18 +49,23 @@ void Application::find_description(const json& locationsJson, std::vector<Place>
                             place.description = properties["html"];
                         }
                     }
-                }
-                else {
-                    std::cerr << "Can't found xid." << std::endl;
-                    return;
+                    if (place_json.contains("kinds")) {
+                        std::string kinds = properties["kinds"];
+                        place.osm = kinds;
+                    }
+                    if (place_json.contains("rate") && place_json["rate"].is_string()) {
+                        place.rating = mapRating(place_json["rate"]);
+                    }
+
+                    if (place_json.contains("image") && place_json["image"].is_string()) {
+                        place.image_url = place_json["image"];
+                    }
                 }
             }
             
             if (place.name.empty()) continue;
             place.index = ++global_index;
             places.push_back(place);
-
-            if (places.size() >= 10) break;
         }
     }
 }
@@ -73,7 +78,7 @@ void Application::find_places(const json& location, std::vector<Place>& places) 
 
     url = "http://api.opentripmap.com/0.1/" + locale + "/places/radius?radius=1000&lon=" + std::to_string(lng) +
         "&lat=" + std::to_string(lat) +
-        "&apikey=" + places_api_key;
+        "&apikey=" + places_api_key + "&limit=" + std::to_string(limit);
 
     std::string response = performRequest(url);
     auto locationsJson = json::parse(response);

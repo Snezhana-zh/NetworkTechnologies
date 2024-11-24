@@ -71,20 +71,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include\;D:\json\json\include;D:\boost_build\include\boost-1_86;D:\httplib\cpp-httplib</IncludePath>
-    <LibraryPath>D:\boost_build\lib;D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include\;D:\json\json\include;D:\boost_build\include\boost-1_86;C:\msys64\mingw64\include\openssl;D:\httplib\cpp-httplib</IncludePath>
+    <LibraryPath>C:\msys64\mingw64\lib;D:\boost_build\lib;D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include\;D:\json\json\include;D:\boost_build\include\boost-1_86;D:\httplib\cpp-httplib</IncludePath>
-    <LibraryPath>D:\boost_build\lib;D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include\;D:\json\json\include;D:\boost_build\include\boost-1_86;C:\msys64\mingw64\include\openssl;D:\httplib\cpp-httplib</IncludePath>
+    <LibraryPath>C:\msys64\mingw64\lib;D:\boost_build\lib;D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include\;D:\json\json\include;D:\boost_build\include\boost-1_86;D:\httplib\cpp-httplib</IncludePath>
-    <LibraryPath>D:\boost_build\lib;D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include\;D:\json\json\include;D:\boost_build\include\boost-1_86;C:\msys64\mingw64\include\openssl;D:\httplib\cpp-httplib</IncludePath>
+    <LibraryPath>C:\msys64\mingw64\lib;D:\boost_build\lib;D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include\;D:\json\json\include;D:\boost_build\include\boost-1_86;D:\httplib\cpp-httplib</IncludePath>
-    <LibraryPath>D:\boost_build\lib;D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\include\;D:\json\json\include;D:\boost_build\include\boost-1_86;C:\msys64\mingw64\include\openssl;D:\httplib\cpp-httplib</IncludePath>
+    <LibraryPath>C:\msys64\mingw64\lib;D:\boost_build\lib;D:\curl-8.11.0\builds\libcurl-vc-x86-release-static-ipv6-sspi-schannel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

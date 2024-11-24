@@ -5,7 +5,7 @@
 
 class View {
 public:
-	std::string createResultInfoHtml(const WeatherData& weatherData, std::vector<Place> places);
+	std::string createResultInfoHtml(const WeatherData& weatherData, std::vector<Place> places, Place loc);
 
 	std::string createIndexHtml();
 

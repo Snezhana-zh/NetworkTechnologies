@@ -14,3 +14,26 @@ std::string url_decode(const std::string& encoded) {
     curl_free(decoded_value);
     return result;
 }
+
+std::string formatDouble(double val) {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(1) << val;
+    return oss.str();
+}
+
+std::string mapRating(const std::string& rating) {
+    static std::unordered_map<std::string, std::string> ratingMap = {
+        {"0", "1"},
+        {"1", "2"},
+        {"2", "3"},
+        {"3", "4"},
+        {"1h", "5"},
+        {"2h", "5"},
+        {"3h", "5"}
+    };
+
+    if (ratingMap.find(rating) != ratingMap.end()) {
+        return ratingMap[rating];
+    }
+    return "unknown";  // По умолчанию возвращаем unknown, если рейтинг неизвестен
+}

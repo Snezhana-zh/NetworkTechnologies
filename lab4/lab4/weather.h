@@ -6,6 +6,8 @@ using json = nlohmann::json;
 
 const double ABSOLUTE_ZERO = 273.15;
 
+const double hPa_const = 0.75006375541921;
+
 // —труктура дл€ хранени€ данных о погоде
 struct WeatherData {
     double temperature;
