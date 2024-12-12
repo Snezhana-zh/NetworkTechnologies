@@ -40,9 +40,16 @@ void InfoPlacesModel::find_description(const json& locationsJson) {
                         place.rating = mapRating(place_json["rate"]);
                     }
 
-                    if (place_json.contains("image") && place_json["image"].is_string()) {
-                        place.image_url = place_json["image"];
+                    if (place_json.contains("image")) {
+                        std::string url = place_json["image"];
+                        if (url.find("https://commons.wikimedia.org") != 0) {
+                            place.image_url = place_json["image"];
+                        }
+                        else {
+                            place.image_url = getImage(url);
+                        }
                     }
+                    std::cout << "name: " << global_index << " image: " << place_json["image"] << std::endl;
                 }
             }
 
@@ -71,6 +78,5 @@ void InfoPlacesModel::find_places(const json& location) {
 
 std::shared_ptr<std::vector<Place>> InfoPlacesModel::getInfoPlaces(const json& location) {
     find_places(location);
-
     return places;
 }

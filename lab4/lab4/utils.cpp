@@ -37,3 +37,45 @@ std::string mapRating(const std::string& rating) {
     }
     return "unknown";  // По умолчанию возвращаем unknown, если рейтинг неизвестен
 }
+
+std::string extractImageUrl(const std::string& html) {
+    std::string searchString = "alt=\"File:";
+    size_t pos = html.find(searchString);
+
+    if (pos != std::string::npos) {
+        size_t imgStart = html.rfind("<img", pos);
+        if (imgStart != std::string::npos) {
+            size_t srcStart = html.find("src=\"", imgStart);
+            if (srcStart != std::string::npos) {
+                size_t urlStart = srcStart + 5;
+                size_t urlEnd = html.find("\"", urlStart);
+
+                if (urlEnd != std::string::npos) {
+                    return html.substr(urlStart, urlEnd - urlStart);
+                }
+            }
+        }
+    }
+
+    return "";
+}
+
+std::string getImage(const std::string& url) {
+    std::string html = performRequest(url);
+
+    if (html.empty()) {
+        std::cerr << "Error: html is empty." << std::endl;
+        return "";
+    }
+
+    std::string imageUrl = extractImageUrl(html);
+
+    if (!imageUrl.empty()) {
+        //std::cout << "find URL: " << imageUrl << std::endl;
+        return imageUrl;
+    }
+    else {
+        //std::cerr << "not find." << std::endl;
+        return "";
+    }
+}

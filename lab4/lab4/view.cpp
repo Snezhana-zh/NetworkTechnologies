@@ -42,6 +42,8 @@ std::string View::createResultInfoHtml(const std::shared_ptr<WeatherData> weathe
         </html>
     )";
 
+    places->clear();
+
     return html;
 }
 

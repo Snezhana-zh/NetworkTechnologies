@@ -1,7 +1,6 @@
 #pragma once
 #include "weather.h"
 
-// Функция для заполнения структуры данными о погоде
 void parseToWeatherData(const json& weatherJson, std::shared_ptr<WeatherData> weatherData) {
     if (weatherJson.contains("main") && weatherJson["main"].is_object()) {
         const auto& main = weatherJson["main"];
