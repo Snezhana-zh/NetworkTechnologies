@@ -1,10 +1,5 @@
 #include "server.hpp"
 #include "client.hpp"
-#include "speed.hpp"
-
-Server* srv_sock;
-
-std::mutex mtx;
 
 int main(int argc, char* argv[]) {
     if (argc != 2 && argc != 4) {
@@ -12,14 +7,14 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     try {
+        boost::asio::io_context io_context;
         if (argc == 2) {
-            std::thread(calculate_speed).detach();
-            boost::asio::io_context io_context;
-            srv_sock = new Server(io_context, std::stoi(argv[1]));
-            srv_sock->run(io_context);
+            Server* server = Server::getServer(io_context, std::stoi(argv[1]));
+            server->run();
         }
         else {
-            run_client(argv[1], argv[2], argv[3]);
+            Client client(io_context, argv[2], argv[3]);
+            client.run(argv[1]);
         }
     }
     catch (std::exception& e) {

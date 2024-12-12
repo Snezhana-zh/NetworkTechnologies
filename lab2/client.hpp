@@ -10,6 +10,12 @@
 
 using boost::asio::ip::tcp;
 
-void run_client(std::string file_name, std::string ip, std::string port);
+class Client {
+public:
+    Client(boost::asio::io_context& io_context, std::string ip, std::string port);
+    void run(std::string file_name);
+private:
+    tcp::socket socket;
+};
 
 #endif
