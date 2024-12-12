@@ -43,9 +43,23 @@ std::string extractImageUrl(const std::string& html) {
     size_t pos = html.find(searchString);
 
     if (pos != std::string::npos) {
+        size_t srcStart = html.find("src=\"", pos);
+        if (srcStart != std::string::npos) {
+            size_t urlStart = srcStart + 5;
+            size_t urlEnd = html.find("\"", urlStart);
+
+            if (urlEnd != std::string::npos) {
+                return html.substr(urlStart, urlEnd - urlStart);
+            }
+        }
+    }
+
+    return "";
+
+    /*if (pos != std::string::npos) {
         size_t imgStart = html.rfind("<img", pos);
         if (imgStart != std::string::npos) {
-            size_t srcStart = html.find("src=\"", imgStart);
+            size_t srcStart = html.find("src=\"", pos);
             if (srcStart != std::string::npos) {
                 size_t urlStart = srcStart + 5;
                 size_t urlEnd = html.find("\"", urlStart);
@@ -55,9 +69,7 @@ std::string extractImageUrl(const std::string& html) {
                 }
             }
         }
-    }
-
-    return "";
+    }*/
 }
 
 std::string getImage(const std::string& url) {
